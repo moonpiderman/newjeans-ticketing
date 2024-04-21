@@ -40,9 +40,10 @@ public class TicketController {
     @GetMapping("/allowed")
     public Mono<AllowedUserResponse> isAllowedUser(
             @RequestParam(name = "queue", defaultValue = "default") String queue,
-            @RequestParam(name = "user_id") Long userId
+            @RequestParam(name = "user_id") Long userId,
+            @RequestParam(name = "token") String token
     ) {
-        return userQueueService.isAllowed(queue, userId).map(AllowedUserResponse::new);
+        return userQueueService.isAllowedByToken(queue, userId, token).map(AllowedUserResponse::new);
     }
 
     @GetMapping("/rank")
