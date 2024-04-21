@@ -3,6 +3,7 @@ package newjeans.tickets.ticketserver.controller;
 import lombok.RequiredArgsConstructor;
 import newjeans.tickets.ticketserver.dto.AllowUserResponse;
 import newjeans.tickets.ticketserver.dto.AllowedUserResponse;
+import newjeans.tickets.ticketserver.dto.RankNumberResponse;
 import newjeans.tickets.ticketserver.dto.RegisterUserResponse;
 import newjeans.tickets.ticketserver.service.UserQueueService;
 import org.springframework.web.bind.annotation.*;
@@ -38,5 +39,13 @@ public class TicketController {
             @RequestParam(name = "user_id") Long userId
     ) {
         return userQueueService.isAllowed(queue, userId).map(AllowedUserResponse::new);
+    }
+
+    @GetMapping("/rank")
+    public Mono<RankNumberResponse> getRank(
+            @RequestParam(name = "queue", defaultValue = "default") String queue,
+            @RequestParam(name = "user_id") Long userId
+    ) {
+        return userQueueService.getRank(queue, userId).map(RankNumberResponse::new);
     }
 }
