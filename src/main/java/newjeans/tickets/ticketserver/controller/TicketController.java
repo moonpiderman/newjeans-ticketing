@@ -1,12 +1,11 @@
 package newjeans.tickets.ticketserver.controller;
 
 import lombok.RequiredArgsConstructor;
+import newjeans.tickets.ticketserver.dto.AllowUserResponse;
+import newjeans.tickets.ticketserver.dto.AllowedUserResponse;
 import newjeans.tickets.ticketserver.dto.RegisterUserResponse;
 import newjeans.tickets.ticketserver.service.UserQueueService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -22,5 +21,22 @@ public class TicketController {
     ) {
         return userQueueService.registerWaitQueue(queue, userId)
                 .map(RegisterUserResponse::new);
+    }
+
+    @PostMapping("/allow")
+    public Mono<AllowUserResponse> allowUser(
+            @RequestParam(name = "queue", defaultValue = "default") String queue,
+            @RequestParam(name = "count") Long count
+    ) {
+        return userQueueService.allowUser(queue, count)
+                .map(i -> new AllowUserResponse(i, i));
+    }
+
+    @GetMapping("/allowed")
+    public Mono<AllowedUserResponse> isAllowedUser(
+            @RequestParam(name = "queue", defaultValue = "default") String queue,
+            @RequestParam(name = "user_id") Long userId
+    ) {
+        return userQueueService.isAllowed(queue, userId).map(AllowedUserResponse::new);
     }
 }
